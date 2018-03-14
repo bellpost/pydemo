@@ -1,0 +1,69 @@
+{% extends "base.html" %}
+{% import "bootstrap/wtf.html" as wtf %}
+{% block page_content %}
+<div>
+<table class="table table-hover">
+    <thead>
+        <th class="active">编号</th>
+        <th class="active">任务</th>
+        <th class="active">分值</th>
+        <th class="active">得分</th>
+    </thead>
+    <tbody>
+        {% for todo in todolists %}
+            <!-- tr -->
+                <td>{{ loop.index }}</td>
+                <td>{{ todo.title }}</td>
+                <td name="{{ todo.id }}">{{ todo.score }}</td>
+                <td>
+                 <div class="input-group input-ms"   style="width:110px;">
+                 <span class="input-group-addon add{{ todo.id }}"><i class="glyphicon glyphicon-plus"></i></span>
+                 <input class="form-control" align="right"  style="width:40px;" name="{{ todo.id }}" readonly="readonly" type="text" value="0"/>
+                 <span class="input-group-addon min{{ todo.id }}"  ><i class="glyphicon glyphicon-minus"></i></span>
+                  </div>
+	                </td>
+	            	</tr>
+                
+                <script>
+                $(".add{{ todo.id }}").click(function(){
+					var sum =  Number({{ todo.score }})+Number($("input[name='{{ todo.id }}']").val());
+				    $("input[name='{{ todo.id }}']").val(sum);});
+                $(".min{{ todo.id }}").click(function(){
+					var sum = Number($("input[name='{{ todo.id }}']").val())-Number({{ todo.score }});
+		        	if(sum <= 0){alert("得分不能小于0");sum = 0;}
+				    $("input[name='{{ todo.id }}']").val(sum);});
+				</script>
+
+        {% endfor %}
+    </tbody>
+
+</table>   
+    <button  class="btn btn-success save">保存</button>
+    
+ </div>
+				<script>
+				 $(".save").click(function(){
+					 	var option=new Array();
+						{% for todo in todolists %}
+						var opt{{ todo.id }}=new Array();
+				        if (Number($("input[name='{{ todo.id }}']").val()) >0){
+				        	opt{{ todo.id }}[0]='{{ todo.id }}';
+				        	opt{{ todo.id }}[1]=Number($("input[name='{{ todo.id }}']").val());
+				        	option.push(opt{{ todo.id }});
+				        }
+				        
+					     {% endfor %}
+					     console.log(option)
+				        //$.post("{{ url_for('save_todo_list') }}", option);
+					     $.ajax({ 
+					    	 type: 'POST', 
+					    	 url: {{ url_for('save_todo_list') }}, 
+					    	 data: JSON.stringify({option}), 
+					    	 contentType: 'application/json' 
+					    	 }) 
+					    location.replace( {{ url_for('return_todo_list') }})   
+				 })
+ 
+ 				</script>
+ 
+{% endblock %}

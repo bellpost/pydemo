@@ -1,0 +1,89 @@
+{% extends "bootstrap/base.html" %}
+
+{% block title %}快快乐乐过家家{% endblock %}
+{% block head %}
+    {{ super() }}
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+	<script src="../static/js/jquery.min.js"></script>
+{% endblock %}
+{% block navbar %}			
+   <nav class="navbar navbar-inverse container">
+    <ul>
+    <li class="nav navbar-nav pull-left">
+
+ 		<a class="navbar-brand" href="{{ url_for('show_todo_list') }}">
+        <span class="glyphicon glyphicon-heart" style="color: rgb(104, 133, 131); font-size: 20px;"> 快快乐乐过家家</span></a> 
+
+        <!-- logout links -->
+		</li>
+        {% if current_user.is_authenticated %}
+            <li class="nav navbar-nav pull-right">
+            	<a class="navbar-brand" href="{{ url_for('logout') }}"><span class="glyphicon glyphicon-off"style="color: rgb(104, 133, 131); font-size: 25px;">  </span></a>
+            </li>
+        {% endif %}
+            </li>
+        </ul>
+    </nav>
+{% endblock %}
+
+{% block content %}
+    <div class="container">
+        <!-- flash message -->
+        {% for message in get_flashed_messages() %}
+        <div class="alert alert-warning alert-dismissible" role="alert">
+            <button type="button" class="close" data-dismiss="alert">
+                <span aria-hidden="true">&times;</span>
+                <span class="sr-only">close</span></button>
+            {{ message }}
+        </div>
+        {% endfor %}
+
+        <!-- body block -->
+        {% block page_content %} {% endblock %}
+        
+                {% if current_user.is_authenticated %}
+           <div data-role="footer ">
+			<nav class="navbar navbar-inverse navbar-fixed-bottom container">
+				<div class="container-fluid margin_bottom_4 margin_top_4 clear_padding text-center ">
+					<ul class="nav nav-pills  nav-fill ">
+						<li class="nav-item">
+							<a class="active" href="{{ url_for('show_todo_list') }} "><span class="glyphicon glyphicon-home" style="color: rgb(104, 133, 131);width:42px; font-size: 23px;">  </span></a>
+						</li>
+						<li class="nav-item">
+							<a class="active" href="{{ url_for('save_todo_list') }}"><span class="glyphicon glyphicon-inbox" style="color: rgb(104, 133, 131);width:42px; font-size: 23px;">  </span></a>
+						</li>
+						<li class="nav-item">
+							<a href="{{ url_for('add_todo_list') }}"><span class="glyphicon glyphicon-cog" style="color: rgb(104, 133, 131); font-size: 23px;width:42px;">  </span></a>
+						</li>
+						<li class="nav-item">	 
+							<a href="{{ url_for('by_me') }}"><span class="glyphicon glyphicon-user" style="color: rgb(104, 133, 131); font-size: 23px;width:42px;">  </span></a>
+						</li>
+					</ul>
+				</div>
+			</nav>
+		 </div>	
+		         {% endif %}
+		 <script>
+			$(function() {
+				autoNav();
+			});
+
+			//解决底部自动导航的问题  
+			function autoNav() {
+				//获取内容的高度  
+				var bodyHeight = $("body ").height();
+				//获取底部导航的高度  
+				var navHeight = $(".navbar ").height();
+				//获取显示屏的高度  
+				var iHeight = document.documentElement.clientHeight || document.body.clientHeight;
+				//如果内容的高度大于（窗口的高度 - 导航的高度）,z则需要添加一个div，设置其高度  
+				if(bodyHeight > (iHeight - navHeight)) {
+					$("body ").append('<div style="height: ' + navHeight + 'px "></div>');
+				}
+			}
+		 </script>
+		 
+    </div>
+    
+
+{% endblock %}

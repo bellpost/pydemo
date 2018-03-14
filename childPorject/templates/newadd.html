@@ -1,0 +1,57 @@
+{% extends "base.html" %}
+{% import "bootstrap/wtf.html" as wtf %}
+{% block page_content %}
+
+<table class="table table-hover">
+    <thead>
+        <th class="active">编号</th>
+        <th class="active">任务</th>
+       <!--  <th class="active">状态</th> -->
+        <th class="active">分值</th>
+       <th class="active">创建时间</th>
+        <th class='active'>操 作</th> 
+    </thead>
+    <tbody>
+        {% for todo in todolists %}
+            <!-- tr -->
+            {% if todo.status %} <tr class="success">
+            {% else %} <tr class="info"> {% endif %}
+                <td>{{ loop.index }}</td>
+                <td>{{ todo.title }}</td>
+                <!-- <td>{{ todo.status }}</td> -->
+                <td>{{ todo.score }}</td>
+               <td>{{ todo.create_time }}</td> 
+               <td>
+                 <div class="input-group input-ms">
+                   <span><a href="{{ url_for('change_todo_list', id=todo.id) }}" class="btn btn-success btn-sm" style="display:inline" style="float:left " role ="button">修改</a></span> 
+                    <span><a href="{{ url_for('delete_todo_list', id=todo.id) }}" class="btn btn-danger btn-sm" style="display:inline" style="float:right" role ="button" >删除</a></span>
+                </div>
+                </td>
+            </tr>
+        {% endfor %}
+
+    </tbody>
+</table>
+
+<!-- Button trigger modal -->
+<button type="button" class="btn btn-primary btn-lg" data-toggle="modal" data-target="#myModal">新增家务</button>
+<!-- Modal -->
+<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+  <div class="modal-dialog"> <div class="modal-content">
+
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+        <h4 class="modal-title" id="myModalLabel" align="center">新增一个家务</h4>
+      </div>
+
+      <div class="modal-body">
+          <div class="row">
+              <div class="col-md-8 col-md-offset-3"> {{ wtf.quick_form(form, form_type="horizontal") }} </div>
+          </div>
+      </div> <!-- modal body -->
+
+    </div> </div>
+</div>
+
+
+{% endblock %}
